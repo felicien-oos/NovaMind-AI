@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NovaMind AI</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+
+    body {
+      margin: 0;
+      font-family: 'Orbitron', sans-serif;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      color: #e0e0ff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .header {
+      width: 100%;
+      padding: 2rem;
+      text-align: center;
+      font-size: 2.5rem;
+      font-weight: bold;
+      background: linear-gradient(90deg, #8e2de2, #4a00e0);
+      box-shadow: 0 0 30px rgba(138, 43, 226, 0.5);
+      color: white;
+      letter-spacing: 2px;
+    }
+    .container {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      border-radius: 20px;
+      padding: 2rem;
+      margin-top: 2rem;
+      width: 90%;
+      max-width: 700px;
+      box-shadow: 0 0 25px rgba(138, 43, 226, 0.3);
+      animation: fadeIn 0.5s ease-in-out;
+    }
+    input, button {
+      width: 100%;
+      padding: 1rem;
+      margin: 0.5rem 0;
+      border-radius: 12px;
+      border: none;
+      font-size: 1rem;
+      font-family: 'Orbitron', sans-serif;
+    }
+    input {
+      background-color: rgba(0, 0, 50, 0.6);
+      color: white;
+      border: 1px solid #4a00e0;
+    }
+    button {
+      background: linear-gradient(90deg, #4a00e0, #8e2de2);
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background: linear-gradient(90deg, #6a00e0, #a02de2);
+    }
+    .hidden { display: none; }
+    .error { color: #ff4d4d; }
+    .notice {
+      font-size: 0.9rem;
+      color: #ffcc00;
+      margin-bottom: 1rem;
+    }
+    #chatbox {
+      height: 300px;
+      overflow-y: auto;
+      background: rgba(0,0,50,0.4);
+      padding: 1rem;
+      border-radius: 12px;
+      margin-bottom: 1rem;
+    }
+    .logo {
+      text-align: center;
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      color: #80d0ff;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">NovaMind AI</div>
+
+  <div class="container" id="signup">
+    <p>Inscris-toi pour parler à ton assistant ultra-futuriste !</p>
+    <p class="notice">⚠️ Avertissement : Tu dois retenir ton mot de passe. Il est obligatoire pour te reconnecter !</p>
+    <input type="email" id="email" placeholder="Adresse e-mail">
+    <input type="date" id="birthdate" placeholder="Date de naissance">
+    <input type="password" id="password" placeholder="Mot de passe (min. 6 caractères)">
+    <div class="error" id="error"></div>
+    <button onclick="validateSignup()">S'inscrire</button>
+  </div>
+
+  <div class="container hidden" id="chat">
+    <div class="logo">🤖 NovaMind AI</div>
+    <div id="chatbox"></div>
+    <input type="text" id="userInput" placeholder="Pose une question...">
+    <button onclick="handleMessage()">Envoyer</button>
+    <button onclick="startSpeechToText()">🎤 Parler</button>
+  </div>
+
+  <script>
+    const kindWords = ["bonjour", "salut", "coucou", "yo", "bonsoir", "hello", "hé", "hey"];
+    const homeworkCount = { count: 0 };
+
+    function validateSignup() {
+      const email = document.getElementById('email').value;
+      const birthdate = document.getElementById('birthdate').value;
+      const password = document.getElementById('password').value;
+      const errorBox = document.getElementById('error');
+
+      if (!email.includes('@') || !birthdate || password.length < 6) {
+        errorBox.textContent = "Toutes les informations doivent être valides !";
+        return;
+      }
+
+      alert("⚠️ AVERTISSEMENT : Souviens-toi bien de ton mot de passe. Tu ne pourras pas te reconnecter sans lui !");
+      localStorage.setItem('email', email);
+      localStorage.setItem('password', password);
+
+      document.getElementById('signup').classList.add('hidden');
+      document.getElementById('chat').classList.remove('hidden');
+    }
+
+    function handleMessage() {
+      const input = document.getElementById('userInput');
+      const chatbox = document.getElementById('chatbox');
+      const msg = input.value.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "");
+      const userLine = `<p><strong>Moi :</strong> ${input.value}</p>`;
+      chatbox.innerHTML += userLine;
+
+      if (["x", "combien", "resous"].some(w => msg.includes(w))) {
+        homeworkCount.count++;
+        if (homeworkCount.count >= 5) {
+          chatbox.innerHTML += `<p style='color:red'><strong>NovaMind :</strong> Les devoirs sont interdits. Vos questions sont maintenant bloquées.</p>`;
+          input.disabled = true;
+          return;
+        }
+      }
+
+      if (kindWords.some(k => msg.includes(k))) {
+        chatbox.innerHTML += `<p><strong>NovaMind :</strong> Bonjour à toi aussi ! 😊</p>`;
+        input.value = "";
+        return;
+      }
+
+      fetch(`https://fr.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(input.value)}`)
+        .then(res => res.json())
+        .then(data => {
+          chatbox.innerHTML += `<p><strong>NovaMind :</strong> ${data.extract || "Je n'ai pas compris, peux-tu reformuler ?"}</p>`;
+        })
+        .catch(() => {
+          chatbox.innerHTML += `<p><strong>NovaMind :</strong> Je n'ai pas trouvé d'information sur ce sujet. Essaie une autre question.</p>`;
+        });
+
+      input.value = "";
+    }
+
+    function startSpeechToText() {
+      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      recognition.lang = 'fr-FR';
+      recognition.start();
+      recognition.onresult = function(event) {
+        document.getElementById('userInput').value = event.results[0][0].transcript;
+        handleMessage();
+      };
+    }
+  </script>
+</body>
+</html>
+
