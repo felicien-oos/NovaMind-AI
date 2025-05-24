@@ -4,64 +4,56 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NovaMind AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
-
     body {
       margin: 0;
       font-family: 'Orbitron', sans-serif;
       background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-      color: #e0e0ff;
+      color: #fff;
       display: flex;
       flex-direction: column;
       align-items: center;
-      height: 100vh;
-      overflow: hidden;
     }
     .header {
       width: 100%;
       padding: 2rem;
       text-align: center;
-      font-size: 2.5rem;
-      font-weight: bold;
-      background: linear-gradient(90deg, #8e2de2, #4a00e0);
-      box-shadow: 0 0 30px rgba(138, 43, 226, 0.5);
-      color: white;
-      letter-spacing: 2px;
+      font-size: 2.8rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, #6f00ff, #8e2de2);
+      box-shadow: 0 0 25px rgba(143, 0, 255, 0.7);
     }
     .container {
       background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(12px);
+      backdrop-filter: blur(15px);
       border-radius: 20px;
       padding: 2rem;
       margin-top: 2rem;
       width: 90%;
-      max-width: 700px;
-      box-shadow: 0 0 25px rgba(138, 43, 226, 0.3);
-      animation: fadeIn 0.5s ease-in-out;
+      max-width: 600px;
+      box-shadow: 0 0 30px rgba(138, 43, 226, 0.3);
     }
     input, button {
       width: 100%;
       padding: 1rem;
       margin: 0.5rem 0;
       border-radius: 12px;
-      border: none;
+      border: 1px solid rgba(255,255,255,0.2);
       font-size: 1rem;
       font-family: 'Orbitron', sans-serif;
-    }
-    input {
-      background-color: rgba(0, 0, 50, 0.6);
-      color: white;
-      border: 1px solid #4a00e0;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
     }
     button {
-      background: linear-gradient(90deg, #4a00e0, #8e2de2);
+      background: linear-gradient(90deg, #6f00ff, #8e2de2);
       color: white;
+      border: none;
       cursor: pointer;
-      transition: background 0.3s ease;
+      transition: transform 0.2s;
     }
     button:hover {
-      background: linear-gradient(90deg, #6a00e0, #a02de2);
+      transform: scale(1.03);
     }
     .hidden { display: none; }
     .error { color: #ff4d4d; }
@@ -73,20 +65,16 @@
     #chatbox {
       height: 300px;
       overflow-y: auto;
-      background: rgba(0,0,50,0.4);
+      background: rgba(255, 255, 255, 0.06);
       padding: 1rem;
       border-radius: 12px;
       margin-bottom: 1rem;
+      border: 1px solid rgba(255,255,255,0.15);
     }
     .logo {
       text-align: center;
       font-size: 1.8rem;
       margin-bottom: 1rem;
-      color: #80d0ff;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
@@ -94,8 +82,8 @@
   <div class="header">NovaMind AI</div>
 
   <div class="container" id="signup">
-    <p>Inscris-toi pour parler à ton assistant ultra-futuriste !</p>
-    <p class="notice">⚠️ Avertissement : Tu dois retenir ton mot de passe. Il est obligatoire pour te reconnecter !</p>
+    <p>Inscris-toi pour parler à ton assistant futuriste !</p>
+    <p class="notice">⚠️ Avertissement : tu dois retenir ton mot de passe. Il est obligatoire pour se reconnecter !</p>
     <input type="email" id="email" placeholder="Adresse e-mail">
     <input type="date" id="birthdate" placeholder="Date de naissance">
     <input type="password" id="password" placeholder="Mot de passe (min. 6 caractères)">
@@ -107,8 +95,10 @@
     <div class="logo">🤖 NovaMind AI</div>
     <div id="chatbox"></div>
     <input type="text" id="userInput" placeholder="Pose une question...">
-    <button onclick="handleMessage()">Envoyer</button>
-    <button onclick="startSpeechToText()">🎤 Parler</button>
+    <div style="display: flex; gap: 0.5rem;">
+      <button onclick="handleMessage()">Envoyer</button>
+      <button onclick="startSpeechToText()">🎤 Parler</button>
+    </div>
   </div>
 
   <script>
@@ -180,4 +170,3 @@
   </script>
 </body>
 </html>
-
